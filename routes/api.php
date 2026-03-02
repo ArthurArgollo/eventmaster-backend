@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Admin routes
     Route::middleware(AdminOnly::class)->group(function () {
         Route::get('/users', [UserController::class, 'index']);
+        Route::post('/users', [UserController::class, 'store']);
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole']);
     }); 
 

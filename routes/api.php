@@ -6,6 +6,7 @@ use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\EventCategoryController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LocalController;
+use App\Http\Controllers\OrganizerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminOnly;
@@ -32,6 +33,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/admins', [AdminController::class, 'store']);
         Route::patch('/admins/{user}', [AdminController::class, 'promote']);
         Route::delete('/admins/{user}', [AdminController::class, 'demote']);
+
+        Route::get('/organizers', [OrganizerController::class, 'index']);
+        Route::post('/organizers', [OrganizerController::class, 'store']);
+        Route::patch('/organizers/{user}/promote', [OrganizerController::class, 'promote']);
+        Route::patch('/organizers/{user}/demote', [OrganizerController::class, 'demote']);
     }); 
 
     // Normal user routes

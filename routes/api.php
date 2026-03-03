@@ -10,6 +10,7 @@ use App\Http\Controllers\OrganizerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminOnly;
+use App\Http\Middleware\OrganizerOnly;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 
@@ -41,13 +42,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/organizers/{user}/demote', [OrganizerController::class, 'demote']);
     }); 
 
+    // Organizer routes
+    Route::middleware(OrganizerOnly::class)->group(function () {
+        Route::apiResource('/events', EventController::class);
+    });
+
     // Normal user routes
     Route::post('/logout', [AuthController::class, 'logout']);
-
-    Route::post('/events', [EventController::class, 'store']);
-    Route::put('/events/{event}', [EventController::class, 'update']);
-    Route::patch('/events/{event}', [EventController::class, 'update']);
-    Route::delete('/events/{event}', [EventController::class, 'destroy']);
 
     Route::apiResource('/locals', LocalController::class);
     Route::apiResource('/event-categories', EventCategoryController::class);

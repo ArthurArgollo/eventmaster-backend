@@ -66,4 +66,12 @@ class User extends Authenticatable
     {
         return $this->role->name === 'admin';
     }
+
+    /**
+     * Verify if the user is an organizer.
+     */
+    public function isOrganizer(): bool
+    {
+        return $this->role->name === 'organizer';
+    }
 }

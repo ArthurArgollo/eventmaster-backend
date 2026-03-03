@@ -20,7 +20,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/recover-password', [PasswordRecoveryController::class, 'sendPasswordResetLink']);
 Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']);
 
-Route::get('/events/{id}', [EventController::class, 'show']);
+Route::get('/events', [EventController::class, 'index']);
+Route::get('/events/{event}', [EventController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Admin routes
@@ -43,7 +44,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Normal user routes
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::apiResource('/events', EventController::class)->only(['store']);
+    Route::post('/events', [EventController::class, 'store']);
+    Route::put('/events/{event}', [EventController::class, 'update']);
+    Route::patch('/events/{event}', [EventController::class, 'update']);
+    Route::delete('/events/{event}', [EventController::class, 'destroy']);
+
     Route::apiResource('/locals', LocalController::class);
     Route::apiResource('/event-categories', EventCategoryController::class);
 });

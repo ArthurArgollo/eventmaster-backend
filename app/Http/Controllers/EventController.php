@@ -19,20 +19,7 @@ class EventController extends Controller
             ->orderBy('time')
             ->paginate($request->integer('per_page', 15));
 
-        $events->getCollection()->transform(function (Event $event) {
-            return [
-                'id' => $event->id,
-                'id_category' => $event->id_category,
-                'id_local' => $event->id_local,
-                'name' => $event->name,
-                'description' => $event->description,
-                'date' => $event->date->format('Y-m-d'),
-                'time' => $event->time,
-                'max_tickets_per_cpf' => $event->max_tickets_per_cpf,
-                'category' => $event->category,
-                'local' => $event->local,
-            ];
-        });
+        $events->getCollection()->transform(fn (Event $event) => $this->formatEvent($event));
 
         return response()->json($events);
     }
@@ -40,22 +27,11 @@ class EventController extends Controller
     /**
      * Show a single event.
      */
-    public function show(string $id): JsonResponse
+    public function show(Event $event): JsonResponse
     {
-        $event = Event::with(['category', 'local'])->findOrFail($id);
+        $event->load(['category', 'local']);
 
-        return response()->json([
-            'id' => $event->id,
-            'id_category' => $event->id_category,
-            'id_local' => $event->id_local,
-            'name' => $event->name,
-            'description' => $event->description,
-            'date' => $event->date->format('Y-m-d'),
-            'time' => $event->time,
-            'max_tickets_per_cpf' => $event->max_tickets_per_cpf,
-            'category' => $event->category,
-            'local' => $event->local,
-        ]);
+        return response()->json($this->formatEvent($event));
     }
 
     /**
@@ -86,18 +62,71 @@ class EventController extends Controller
 
         return response()->json([
             'message' => __('Event created successfully.'),
-            'event' => [
-                'id' => $event->id,
-                'id_category' => $event->id_category,
-                'id_local' => $event->id_local,
-                'name' => $event->name,
-                'description' => $event->description,
-                'date' => $event->date->format('Y-m-d'),
-                'time' => $event->time,
-                'max_tickets_per_cpf' => $event->max_tickets_per_cpf,
-                'category' => $event->category,
-                'local' => $event->local,
-            ],
+            'event' => $this->formatEvent($event),
         ], 201);
+    }
+
+    /**
+     * Update an event.
+     */
+    public function update(Request $request, Event $event): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'id_category' => ['sometimes', 'integer', 'exists:event_categories,id'],
+            'id_local' => ['sometimes', 'integer', 'exists:locals,id'],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'description' => ['sometimes', 'string'],
+            'date' => ['sometimes', 'date'],
+            'time' => ['sometimes', 'date_format:H:i'],
+            'max_tickets_per_cpf' => ['sometimes', 'integer', 'min:0'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => __('The given data was invalid.'),
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $event->update($validator->validated());
+        $event->load(['category', 'local']);
+
+        return response()->json([
+            'message' => __('Event updated successfully.'),
+            'event' => $this->formatEvent($event),
+        ]);
+    }
+
+    /**
+     * Delete an event.
+     */
+    public function destroy(Event $event): JsonResponse
+    {
+        $event->delete();
+
+        return response()->json([
+            'message' => __('Event deleted successfully.'),
+        ]);
+    }
+
+    /**
+     * Format event for JSON response.
+     *
+     * @return array<string, mixed>
+     */
+    private function formatEvent(Event $event): array
+    {
+        return [
+            'id' => $event->id,
+            'id_category' => $event->id_category,
+            'id_local' => $event->id_local,
+            'name' => $event->name,
+            'description' => $event->description,
+            'date' => $event->date->format('Y-m-d'),
+            'time' => $event->time,
+            'max_tickets_per_cpf' => $event->max_tickets_per_cpf,
+            'category' => $event->category,
+            'local' => $event->local,
+        ];
     }
 }

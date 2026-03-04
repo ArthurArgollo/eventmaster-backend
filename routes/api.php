@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Normal user routes
+    Route::get('/user', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
     
 });

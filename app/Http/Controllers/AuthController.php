@@ -81,16 +81,24 @@ class AuthController extends Controller
         $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
-            'message' => __('Login successful.'),
-            'user' => [
-                'id' => $user->id,
-                'id_role' => $user->id_role,
-                'name' => $user->name,
-                'cpf' => $user->cpf,
-                'email' => $user->email,
-            ],
+            'name' => $user->name,
             'token' => $token,
-            'token_type' => 'Bearer',
+        ]);
+    }
+
+    /**
+     * Get the authenticated user's info.
+     */
+    public function me(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'id' => $user->id,
+            'id_role' => $user->id_role,
+            'name' => $user->name,
+            'cpf' => $user->cpf,
+            'email' => $user->email,
         ]);
     }
 

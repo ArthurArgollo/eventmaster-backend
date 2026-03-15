@@ -114,4 +114,18 @@ class AuthController extends Controller
             'message' => __('Successfully signed off.'),
         ]);
     }
+
+    /**
+     * Delete the authenticated user's account (and revoke all tokens).
+     */
+    public function destroyAccount(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $user->tokens()->delete();
+        $user->delete();
+
+        return response()->json([
+            'message' => __('Account deleted successfully.'),
+        ]);
+    }
 }

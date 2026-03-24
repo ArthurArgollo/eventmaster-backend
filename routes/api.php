@@ -13,6 +13,7 @@ use App\Http\Middleware\AdminOnly;
 use App\Http\Middleware\OrganizerOnly;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrganizerRequestController;
 use App\Http\Controllers\UserController;
 
 Route::post('/signup', [AuthController::class, 'signup']);
@@ -24,6 +25,8 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
 
 Route::get('/events', [EventController::class, 'index']);
 Route::get('/events/{event}', [EventController::class, 'show']);
+
+Route::post('/organizer-requests', [OrganizerRequestController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Admin routes
@@ -42,6 +45,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/organizers', [OrganizerController::class, 'store']);
         Route::patch('/organizers/{user}/promote', [OrganizerController::class, 'promote']);
         Route::patch('/organizers/{user}/demote', [OrganizerController::class, 'demote']);
+
+        Route::get('/organizer-requests', [OrganizerRequestController::class, 'index']);
+        Route::get('/organizer-requests/{organizerRequest}', [OrganizerRequestController::class, 'show']);
+        Route::patch('/organizer-requests/{organizerRequest}/approve', [OrganizerRequestController::class, 'approve']);
+        Route::patch('/organizer-requests/{organizerRequest}/reject', [OrganizerRequestController::class, 'reject']);
     }); 
 
     // Organizer routes

@@ -33,5 +33,20 @@
     "You cannot delete the root user.": "Você não pode excluir o usuário root.",
     "You cannot delete yourself from the user management panel.": "Você não pode excluir a si mesmo pelo painel de usuários.",
     "You cannot delete the last admin.": "Você não pode excluir o último administrador.",
-    "Only admins can delete users.": "Apenas administradores podem excluir usuários."
+    "Only admins can delete users.": "Apenas administradores podem excluir usuários.",
+    "A user with this email or CPF already exists. Resolve the conflict before approving.": "Já existe um usuário com este e-mail ou CPF. Resolva o conflito antes de aprovar.",
+    "Event deleted successfully.": "Evento excluído com sucesso.",
+    "Event updated successfully.": "Evento atualizado com sucesso.",
+    "Organizer created successfully.": "Organizador criado com sucesso.",
+    "Organizer demoted to user successfully.": "Organizador rebaixado a usuário com sucesso.",
+    "Organizer promoted to admin successfully.": "Organizador promovido a administrador com sucesso.",
+    "Organizer request approved successfully.": "Solicitação de organizador aprovada com sucesso.",
+    "Organizer request rejected successfully.": "Solicitação de organizador rejeitada com sucesso.",
+    "Organizer request submitted successfully.": "Solicitação de organizador enviada com sucesso.",
+    "This organizer request has already been approved.": "Esta solicitação de organizador já foi aprovada.",
+    "This organizer request has already been rejected.": "Esta solicitação de organizador já foi rejeitada.",
+    "This organizer request is no longer pending.": "Esta solicitação de organizador já não está pendente.",
+    "This request is missing CPF or email and cannot be approved.": "Esta solicitação não possui CPF ou e-mail e não pode ser aprovada.",
+    "Unauthorized. Only organizers can perform this action.": "Não autorizado. Apenas organizadores podem realizar esta ação.",
+    "User is not an organizer.": "O usuário não é um organizador."
 }

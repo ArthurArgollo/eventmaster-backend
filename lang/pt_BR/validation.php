@@ -161,6 +161,13 @@ return [
         'number_street' => 'número',
         'neighborhood' => 'bairro',
         'max_people' => 'capacidade máxima',
+        'phone_number' => 'telefone',
+        'reason' => 'motivo',
+        'banner_image' => 'imagem de banner',
+        'website' => 'site',
+        'address' => 'endereço',
+        'organization_description' => 'descrição da organização',
+        'cnpj' => 'CNPJ',
     ],
 
 ];

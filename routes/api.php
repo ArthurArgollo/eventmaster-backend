@@ -32,6 +32,32 @@ Route::post('/organizer-requests', [OrganizerRequestController::class, 'store'])
 
 Route::any('/webhooks/mercado-pago', MercadoPagoWebhookController::class);
 
+// Backend-only fallback pages for Checkout Pro redirects.
+//TODO change this to real routes in the frontend
+Route::get('/checkout/success', function (Request $request) {
+    return response()->json([
+        'message' => __('Checkout finished with success redirect.'),
+        'status' => 'success',
+        'query' => $request->query(),
+    ]);
+});
+
+Route::get('/checkout/failure', function (Request $request) {
+    return response()->json([
+        'message' => __('Checkout finished with failure redirect.'),
+        'status' => 'failure',
+        'query' => $request->query(),
+    ], 400);
+});
+
+Route::get('/checkout/pending', function (Request $request) {
+    return response()->json([
+        'message' => __('Checkout finished with pending redirect.'),
+        'status' => 'pending',
+        'query' => $request->query(),
+    ], 202);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     // Admin routes
     Route::middleware(AdminOnly::class)->group(function () {

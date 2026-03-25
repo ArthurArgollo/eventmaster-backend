@@ -46,6 +46,10 @@ class CartCheckoutController extends Controller
             'sandbox_init_point' => $result['sandbox_init_point'],
             'preference_id' => $result['preference_id'],
             'external_reference' => $result['session']->external_reference,
+            'debug' => [
+                'back_urls' => $result['debug_back_urls'],
+                'auto_return' => $result['debug_auto_return'],
+            ],
         ]);
     }
 }

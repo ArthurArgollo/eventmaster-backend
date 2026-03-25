@@ -33,7 +33,14 @@ class MercadoPagoCheckoutService
     }
 
     /**
-     * @return array{session: MercadoPagoCheckoutSession, init_point: string|null, sandbox_init_point: string|null, preference_id: string|null}
+     * @return array{
+     *   session: MercadoPagoCheckoutSession,
+     *   init_point: string|null,
+     *   sandbox_init_point: string|null,
+     *   preference_id: string|null,
+     *   debug_back_urls: array<string, string>,
+     *   debug_auto_return: string|null
+     * }
      */
     public function createCheckoutProPreference(User $user): array
     {
@@ -115,6 +122,13 @@ class MercadoPagoCheckoutService
             $notificationUrl = rtrim(config('app.url'), '/').'/api/webhooks/mercado-pago';
         }
 
+        $backUrls = [
+            'success' => $this->validUrlOrNull(config('mercadopago.back_urls.success')),
+            'failure' => $this->validUrlOrNull(config('mercadopago.back_urls.failure')),
+            'pending' => $this->validUrlOrNull(config('mercadopago.back_urls.pending')),
+        ];
+        $backUrls = array_filter($backUrls, fn ($url) => $url !== null);
+
         $request = [
             'items' => $preferenceItems,
             'payer' => [
@@ -124,18 +138,19 @@ class MercadoPagoCheckoutService
             ],
             'external_reference' => $externalReference,
             'statement_descriptor' => mb_substr((string) config('mercadopago.statement_descriptor'), 0, 22),
-            'back_urls' => [
-                'success' => config('mercadopago.back_urls.success'),
-                'failure' => config('mercadopago.back_urls.failure'),
-                'pending' => config('mercadopago.back_urls.pending'),
-            ],
-            'auto_return' => config('mercadopago.auto_return'),
             'notification_url' => $notificationUrl,
             'payment_methods' => [
                 'installments' => 12,
                 'default_installments' => 1,
             ],
         ];
+
+        if ($backUrls !== []) {
+            $request['back_urls'] = $backUrls;
+        }
+
+        // Temporary safe mode: avoid auto_return strict validation until frontend/back URLs are stable.
+        // Mercado Pago will still redirect via back_urls when the user leaves Checkout Pro.
 
         $requestOptions = new RequestOptions;
         $requestOptions->setCustomHeaders(['X-Idempotency-Key: '.$externalReference]);
@@ -157,6 +172,8 @@ class MercadoPagoCheckoutService
             'init_point' => $preference->init_point,
             'sandbox_init_point' => $preference->sandbox_init_point ?? null,
             'preference_id' => $preference->id,
+            'debug_back_urls' => $backUrls,
+            'debug_auto_return' => null,
         ];
     }
 
@@ -253,5 +270,19 @@ class MercadoPagoCheckoutService
         $rest = $parts[1] ?? $first;
 
         return [mb_substr($first, 0, 100), mb_substr($rest, 0, 100)];
+    }
+
+    private function validUrlOrNull(mixed $value): ?string
+    {
+        if (! is_string($value)) {
+            return null;
+        }
+
+        $url = trim($value);
+        if ($url === '' || ! filter_var($url, FILTER_VALIDATE_URL)) {
+            return null;
+        }
+
+        return $url;
     }
 }

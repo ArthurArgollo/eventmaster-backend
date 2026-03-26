@@ -17,6 +17,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\MercadoPagoWebhookController;
 use App\Http\Controllers\OrganizerRequestController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\StaffController;
 
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -100,4 +101,9 @@ Route::middleware('auth:sanctum')->group(function () {
         ->parameters(['cart' => 'cartItem']);
 
     Route::post('/cart/checkout', CartCheckoutController::class);
+});
+
+
+Route::middleware(['auth:sanctum', OrganizerOnly::class])->group(function (){
+    Route::apiResource('staffs', StaffController::class);
 });

@@ -70,8 +70,19 @@ class StaffController extends Controller
 
     public function destroy(User $staff)
     {
-        $staff->deleteAccount(); 
+        $userRole = Role::where('name', 'user')->first();
 
-        return response()->json(['message' => 'Staff removido com sucesso.'], 200);
+        if (! $userRole) {
+            return response()->json(['message' => __('User role not configured.')], 500);
+        }
+
+        $staff->id_role = $userRole->id;
+        $staff->save();
+        $staff->load('role');
+
+        return response()->json([
+            'message' => __('Staff role removed successfully.'),
+            'user' => $staff,
+        ], 200);
     }
 }

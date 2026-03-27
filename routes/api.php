@@ -101,6 +101,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Tickets (authenticated user's tickets)
     Route::get('/tickets', [UserTicketController::class, 'index']);
+    Route::get('/purchases', [UserTicketController::class, 'purchaseHistory']);
+    Route::get('/purchases/{purchase}', [UserTicketController::class, 'purchaseShow']);
 
     // Cart (authenticated user's own cart)
     Route::apiResource('/cart', CartController::class)
